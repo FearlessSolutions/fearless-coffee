@@ -57,3 +57,13 @@ resource "aws_iot_thing" "coffee_brewing_button" {
   }
 }
 
+resource "aws_iot_topic_rule" "coffee_brewing_button_pushed" {
+  name = "coffee_brewing_button_pushed"
+  description = "Triggers when the coffee_brewing button has been pushed"
+  sql = "SELECT * FROM 'iotbutton/${data.aws_ssm_parameter.coffee_brewing_button_dsn.value}'"
+  sql_version = "2016-03-23"
+  enabled = true
+  lambda {
+    function_arn = aws_lambda_function.coffee_brewing.arn
+  }
+}
